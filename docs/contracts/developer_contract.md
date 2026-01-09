@@ -173,25 +173,26 @@ if __name__ == "__main__":
 
 7️⃣ Контракт для разработчиков
 
-Все файлы сохраняются в соответствующих папках.
+* Все файлы сохраняются в соответствующих папках.
 
-Любой новый функционал согласуется с командой.
+* Любой новый функционал согласуется с командой.
 
-Ветки и Pull Requests используются для согласования изменений.
+* Ветки и Pull Requests используются для согласования изменений.
 
-Таблицы подключения датчиков всегда актуальны.
+* Таблицы подключения датчиков всегда актуальны.
 
-Любой новый модуль I²C или аналоговый датчик:
+* Любой новый модуль I²C или аналоговый датчик:
 
-Проверяется на уникальный адрес.
+* Проверяется на уникальный адрес.
 
-Подключение документируется в docs/schematics/ и в developer_contract.md.
+* Подключение документируется в docs/schematics/ и в developer_contract.md.
 
-История изменений хранится через GitHub.
+* История изменений хранится через GitHub.
 
 8️⃣ Примеры JSON/YAML конфигураций
 
 ESP32
+```
 {
   "device_id": "esp32_module_01",
   "sensors": [
@@ -199,8 +200,10 @@ ESP32
     {"type": "illumination_1", "pin": "I2C", "i2c_address": "0x23"}
   ]
 }
+```
 
 Raspberry Pi
+```
 {
   "device_id": "raspberry_pi_01",
   "relays": [
@@ -216,44 +219,4 @@ Raspberry Pi
     {"name": "WATER_TEMP_1", "gpio": 4}
   ]
 }
-
-9️⃣ Визуальное дерево проекта (Markdown, для GitHub)
-```
-hydrofarm-system/
-├── backend/
-│   ├── app.py
-│   ├── mqtt_client.py
-│   ├── db.py
-│   ├── config.py
-│   ├── gpio.py
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── configs/template_esp32.json
-├── docker/
-│   ├── mosquitto/
-│   │   ├── mosquitto.conf
-│   │   └── README.md
-│   └── postgres/
-│       ├── init.sql
-│       ├── pg_hba.conf
-│       ├── postgresql.conf
-│       └── README.md
-├── docs/
-│   ├── schematics/
-│   │   ├── hydrofarm_connections Vers_01.pdf
-│   │   └── hydrofarm_connections Vers_01.vsdx
-│   ├── manuals/
-│   │   └── .gitkeep
-│   └── contracts/
-│       └── developer_contract.md
-├── esp32/
-│   ├── common/README.md
-│   ├── esp32_module_01/esp32_module_01.ino
-│   ├── config.h
-│   └── README.md
-├── web/
-│   └── .gitkeep
-├── .gitignore
-├── LICENSE
-└── README.md
 ```
