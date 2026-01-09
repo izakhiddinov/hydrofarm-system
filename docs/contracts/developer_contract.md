@@ -5,7 +5,7 @@
 ## 1️⃣ Структура проекта на GitHub
 
 Проект на GitHub: `hydrofarm-system`
-
+```
 hydrofarm-system/
 ├── backend/ # Python код для работы с Raspberry Pi и ESP32
 ├── docker/ # Docker-файлы и контейнеры (MQTT, PostgreSQL)
@@ -18,7 +18,7 @@ hydrofarm-system/
 ├── .gitignore
 ├── LICENSE
 └── README.md
-
+```
 
 **Примечания:**
 
