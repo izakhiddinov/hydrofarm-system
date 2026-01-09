@@ -14,7 +14,7 @@ backend/
 ├── gpio.py
 ├── requirements.txt
 └── configs/
-        └── template_esp32.json
+    └── template_esp32.json
 ```
 
 **Примечания:**  
