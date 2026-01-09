@@ -10,6 +10,18 @@
 
 Проект на GitHub: `hydrofarm-system`
 
+hydrofarm-system/
+├── backend/ # Python код для работы с Raspberry Pi и ESP32
+├── docker/ # Docker-файлы и контейнеры (MQTT, PostgreSQL)
+├── docs/
+│ ├── schematics/ # Visio и PDF схемы подключения
+│ ├── manuals/ # Руководства пользователя
+│ └── contracts/ # Контракты и инструкции для разработчиков
+├── esp32/ # Код и конфигурации для ESP32
+├── web/ # Веб-интерфейс (HTML, CSS, JS)
+├── .gitignore
+├── LICENSE
+└── README.md
 
 **Примечания:**
 
