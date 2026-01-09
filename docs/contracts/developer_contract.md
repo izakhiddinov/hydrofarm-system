@@ -6,26 +6,38 @@
 
 ```
 hydrofarm-system/
-├── backend/ # Python код для Raspberry Pi и ESP32
-│ ├── app.py # Основной код
-│ ├── mqtt_client.py # Работа с Mosquitto
-│ ├── db.py # Работа с PostgreSQL
-│ └── config.py # Настройки (IP брокера, БД)
+├── backend/
+│   ├── app.py
+│   ├── mqtt_client.py
+│   ├── db.py
+│   ├── config.py
+│   └── requirements.txt
+│
 ├── docker/
-│ ├── mosquitto/ # Конфиг брокера MQTT, volume для хранения сообщений
-│ │ └── mosquitto.conf
-│ └── postgres/ # Конфиг PostgreSQL, volume для базы
-│ ├── postgresql.conf
-│ └── pg_hba.conf
+│   ├── mosquitto/
+│   │   ├── mosquitto.conf
+│   │   └── README.md
+│   │
+│   └── postgres/
+│       ├── init.sql
+│       └── README.md
+│
+├── esp32/
+│   └── README.md
+│
 ├── docs/
-│ ├── schematics/ # Visio и PDF схемы подключения
-│ ├── manuals/ # Руководства пользователя
-│ └── contracts/ # Контракты и инструкции для разработчиков
-├── esp32/ # Код и конфигурации ESP32
-├── web/ # Веб-интерфейс (HTML, CSS, JS)
+│   ├── schematics/
+│   ├── manuals/
+│   └── contracts/
+│       └── developer_contract.md
+│
+├── web/
+│   └── README.md
+│
 ├── .gitignore
 ├── LICENSE
 └── README.md
+
 ```
 
 
