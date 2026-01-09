@@ -1,22 +1,28 @@
 # HydroFarm Developer Contract
 
----
-
 ## 1️⃣ Структура проекта на GitHub
 
-Проект на GitHub: `hydrofarm-system`
+**Проект на GitHub:** `hydrofarm-system`
+
 ```
 hydrofarm-system/
-├── backend/   # Python код, обработка MQTT, работа с БД
+├── backend/ # Python код для Raspberry Pi и ESP32
+│ ├── app.py # Основной код
+│ ├── mqtt_client.py # Работа с Mosquitto
+│ ├── db.py # Работа с PostgreSQL
+│ └── config.py # Настройки (IP брокера, БД)
 ├── docker/
-│   ├── mosquitto/  # конфиг Mosquitto, volume для хранения сообщений
-│   └── postgres/   # конфиг PostgreSQL, volume для базы
+│ ├── mosquitto/ # Конфиг брокера MQTT, volume для хранения сообщений
+│ │ └── mosquitto.conf
+│ └── postgres/ # Конфиг PostgreSQL, volume для базы
+│ ├── postgresql.conf
+│ └── pg_hba.conf
 ├── docs/
-│   ├── schematics/ # Visio и PDF схемы подключения
-│   ├── manuals/    # Руководства
-│   └── contracts/  # Контракты и инструкции
-├── esp32/    # код для ESP32 и конфиги
-├── web/      # HTML, CSS, JS
+│ ├── schematics/ # Visio и PDF схемы подключения
+│ ├── manuals/ # Руководства пользователя
+│ └── contracts/ # Контракты и инструкции для разработчиков
+├── esp32/ # Код и конфигурации ESP32
+├── web/ # Веб-интерфейс (HTML, CSS, JS)
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -35,54 +41,55 @@ hydrofarm-system/
 1. Все изменения **вносятся через GitHub** с коммитами и описанием.
 2. Для крупных изменений используем **ветки (branches)** и pull requests.
 3. Каждый разработчик согласовывает новые сенсоры и модули в контракте.
-4. Все датчики и устройства должны быть описаны в таблице для Raspberry Pi и ESP32.
+4. Все датчики и устройства должны быть описаны в таблицах подключения для Raspberry Pi и ESP32.
 
 ---
 
-## 3️⃣ Таблица подключений и устройств
+## 3️⃣ Подключения и устройства
 
 ### Raspberry Pi 5 (основной сервер)
 
-#### Таблица для программиста
+**Заметка программиста**
 
-| №  | GPIO         | Название       | Тип          | Описание                                | Дополнительная инф.                                   | I²C_ADDRESS / Канал |
-|----|-------------|----------------|-------------|----------------------------------------|------------------------------------------------------|-------------------|
-| 1  | 21          | FLOW_SENSOR_1  | INPUT       | Импульсы расхода воды                  | INPUT, PULSE, 3.3V (ACTIVE LOW)                     | -                 |
-| 2  | 26          | INLET_VALVE_1  | OUTPUT      | Клапан подачи воды 12V                 | OUTPUT, RELAY, ACTIVE LOW                            | -                 |
-| 3  | 17          | PUMP_1         | OUTPUT      | Насос 1 (основной для подачи)          | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 4  | 27          | PUMP_2         | OUTPUT      | Насос 2 (резервный)                     | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 5  | 5           | PUMP_3         | OUTPUT      | Насос 3 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 6  | 6           | PUMP_4         | OUTPUT      | Насос 4 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 7  | 13          | PUMP_5         | OUTPUT      | Насос 5 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 8  | 19          | PUMP_6         | OUTPUT      | Насос 6 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)          | -                 |
-| 9  | 22          | LIGHT_1        | OUTPUT      | Свет                                   | RELAY, 5V, ACTIVE LOW                                | -                 |
-| 10 | 23          | FAN_1          | OUTPUT      | Вентиляторы                             | RELAY, 5V, ACTIVE LOW                                | -                 |
-| 11 | 24          | FILL_VALVE_2   | OUTPUT      | Клапан долива                           | RELAY, 5V, ACTIVE LOW                                | -                 |
-| 12 | A0 (ADS1115) | PH_SENSOR_1    | ANALOG_INPUT| pH-датчик через делитель 10k/10k       | ADC ×2 для реального значения                        | 0x48 / A0         |
-| 13 | A1 (ADS1115) | TDS_SENSOR_1   | ANALOG_INPUT| TDS-датчик через делитель 10k/10k      | ADC ×2 для реального значения                        | 0x48 / A1         |
-| 14 | A2 (ADS1115) | RESERVED_2     | ANALOG_INPUT| Резервный                                | Для будущих аналоговых датчиков                       | 0x48 / A2         |
-| 15 | A3 (ADS1115) | RESERVED_3     | ANALOG_INPUT| Резервный                                | Для будущих аналоговых датчиков                       | 0x48 / A3         |
-| 16 | 4           | WATER_TEMP_1   | INPUT       | Температура воды (DS18B20, 1-Wire)    | Подтяжка 4.7kΩ, питание 3.3V AMS1117               | -                 |
-| 17 | 18          | ULTRASONIC_TRIG_1 | OUTPUT   | УЗ датчик уровня (Trig)                | OUTPUT, 3.3V, 1 GPIO на Trig                         | -                 |
-| 18 | 25          | ULTRASONIC_ECHO_1 | INPUT    | УЗ датчик уровня (Echo)                | INPUT, 5V → 3.3V делитель, 1 GPIO на Echo           | -                 |
+| №  | GPIO         | Название        | Тип          | Описание                                         | Дополнительная инф.                                           | I²C_ADDRESS / Канал |
+|----|-------------|----------------|-------------|-------------------------------------------------|---------------------------------------------------------------|-------------------|
+| 1  | 21          | FLOW_SENSOR_1  | INPUT       | Импульсы расхода воды                           | INPUT, PULSE, 3.3V (ACTIVE LOW (импульс = Low))             | -                 |
+| 2  | 26          | INLET_VALVE_1  | OUTPUT      | Клапан подачи воды 12V                          | OUTPUT, RELAY, ACTIVE LOW                                     | -                 |
+| 3  | 17          | PUMP_1         | OUTPUT      | Насос 1 (основной для подачи в общую систему)  | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 4  | 27          | PUMP_2         | OUTPUT      | Насос 2 (резервный для подачи в общую систему) | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 5  | 5           | PUMP_3         | OUTPUT      | Насос 3 (дозирующий)                            | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 6  | 6           | PUMP_4         | OUTPUT      | Насос 4 (дозирующий)                            | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 7  | 13          | PUMP_5         | OUTPUT      | Насос 5 (дозирующий)                            | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 8  | 19          | PUMP_6         | OUTPUT      | Насос 6 (дозирующий)                            | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                   | -                 |
+| 9  | 22          | LIGHT_1        | OUTPUT      | Свет                                            | RELAY, 5V, ACTIVE LOW                                         | -                 |
+| 10 | 23          | FAN_1          | OUTPUT      | Вентиляторы                                     | RELAY, 5V, ACTIVE LOW                                         | -                 |
+| 11 | 24          | FILL_VALVE_2   | OUTPUT      | Клапан долива                                  | RELAY, 5V, ACTIVE LOW                                         | -                 |
+| 12 | RESERVED_1  | RESERVED_1     | -           | Резервный                                       | -                                                             | -                 |
+| 13 | A0 (ADS1115)| PH_SENSOR_1    | ANALOG_INPUT| pH-датчик через делитель 10k/10k              | ADC ×2 для реального значения                                 | 0x48 / A0         |
+| 14 | A1 (ADS1115)| TDS_SENSOR_1   | ANALOG_INPUT| TDS-датчик через делитель 10k/10k             | ADC ×2 для реального значения                                 | 0x48 / A1         |
+| 15 | A2 (ADS1115)| RESERVED_2     | ANALOG_INPUT| Резервный                                       | Для будущих аналоговых датчиков                                | 0x48 / A2         |
+| 16 | A3 (ADS1115)| RESERVED_3     | ANALOG_INPUT| Резервный                                       | Для будущих аналоговых датчиков                                | 0x48 / A3         |
+| 17 | 4           | WATER_TEMP_1   | INPUT       | Температура воды (DS18B20, 1-Wire)            | DS18B20, подтяжка 4.7kΩ, питание 3.3V AMS1117                | -                 |
+| 18 | 18          | ULTRASONIC_TRIG_1 | OUTPUT   | УЗ датчик уровня (Trig)                        | OUTPUT, 3.3V, 1 GPIO на Trig                                   | -                 |
+| 19 | 25          | ULTRASONIC_ECHO_1 | INPUT    | УЗ датчик уровня (Echo)                        | INPUT, 5V → 3.3V делитель, 1 GPIO на Echo                     | -                 |
 
 ---
 
 ### ESP32 (модули для масштабирования)
 
-#### Таблица для программиста ESP32
+**Заметка программиста**
 
-| №  | GPIO | Название           | Тип           | Описание                                | Дополнительная инф.                                               | I²C_ADDRESS / Канал |
-|----|------|------------------|---------------|----------------------------------------|------------------------------------------------------------------|-------------------|
-| 1  | 21   | CO2/VOC_1        | I²C           | CO₂ / VOC                               | SDA → GPIO21, SCL → GPIO22, питание 3.3V от AMS1117, GND общая  | 0x5A              |
-| 2  | 22   | illumination_1   | I²C           | Освещённость                            | SDA → GPIO21, SCL → GPIO22, питание 3.3V от AMS1117, GND общая  | 0x23              |
-| 3  | 4    | temp_humidity_1  | DIGITAL_INPUT | Температура и влажность воздуха         | DATA → GPIO4, резистор 10kΩ между DATA и VCC, питание 3.3V AMS1117 | —                 |
-| 4  | 34   | soil_moistureAn_1| ANALOG_INPUT  | Влажность почвы (аналог)               | AO → GPIO34, питание 3.3V AMS1117, GND общая                     | —                 |
-| 5  | 23   | soil_moistureDig_1 | DIGITAL_INPUT | Влажность почвы (цифровой порог)       | DO → GPIO23, питание 3.3V AMS1117, GND общая                     | —                 |
-| 6  | 19   | LCD 16x2 I²C     | I²C           | Жидкокристаллический дисплей            | SDA → GPIO21, SCL → GPIO22, питание 5V от MT3608, GND общая      | 0x27              |
-| 7  | 18   | ULTRASONIC_TRIG_1 | DIGITAL_OUTPUT | УЗ датчик уровня (Trig)               | OUTPUT, 3.3V, 1 GPIO на Trig                                     | —                 |
-| 8  | 25   | ULTRASONIC_ECHO_1 | DIGITAL_INPUT  | УЗ датчик уровня (Echo)               | INPUT, 5V → 3.3V делитель, 1 GPIO на Echo                        | —                 |
-| 9  | VIN  | ESP32_POWER       | POWER          | Питание ESP32 DevKit V1                | VIN подключен к OUT+ MT3608, GND к OUT− MT3608                   | —                 |
+| №  | GPIO   | Название            | Тип            | Описание                                         | Дополнительная инф.                                                | I²C_ADDRESS / Канал |
+|----|-------|--------------------|----------------|-------------------------------------------------|-------------------------------------------------------------------|-------------------|
+| 1  | 21    | CO2/VOC_1           | I²C            | CO₂ / VOC                                       | SDA → GPIO21, SCL → GPIO22, питание 3.3V от AMS1117, GND общая  | 0x5A              |
+| 2  | 22    | illumination_1      | I²C            | Освещённость                                    | SDA → GPIO21, SCL → GPIO22, питание 3.3V от AMS1117, GND общая  | 0x23              |
+| 3  | 4     | temp_humidity_1     | DIGITAL_INPUT  | Температура и влажность воздуха                 | DATA → GPIO4, резистор 10kΩ между DATA и VCC, питание 3.3V AMS1117, GND общая | — |
+| 4  | 34    | soil_moistureAn_1   | ANALOG_INPUT   | Влажность почвы (аналог)                        | AO → GPIO34, питание 3.3V AMS1117, GND общая                     | —                 |
+| 5  | 23    | soil_moistureDig_1  | DIGITAL_INPUT  | Влажность почвы (цифровой порог)               | DO → GPIO23, питание 3.3V AMS1117, GND общая                     | —                 |
+| 6  | 19    | LCD 16x2 I²C        | I²C            | Жидкокристаллический дисплей                     | SDA → GPIO21, SCL → GPIO22, питание 5V от MT3608, GND общая      | 0x27              |
+| 7  | 18    | ULTRASONIC_TRIG_1   | DIGITAL_OUTPUT | УЗ датчик уровня (Trig)                         | OUTPUT, 3.3V, 1 GPIO на Trig                                     | —                 |
+| 8  | 25    | ULTRASONIC_ECHO_1   | DIGITAL_INPUT  | УЗ датчик уровня (Echo)                         | INPUT, 5V → 3.3V делитель, 1 GPIO на Echo                        | —                 |
+| 9  | VIN   | ESP32_POWER          | POWER          | Питание ESP32 DevKit V1                          | VIN подключен к OUT+ MT3608, GND к OUT− MT3608                   | —                 |
 
 ---
 
@@ -90,7 +97,7 @@ hydrofarm-system/
 
 - Любой новый датчик / ESP32 модуль:
   1. Создаётся папка в `esp32/` или `backend/`.
-  2. Добавляется запись в таблицу подключения.
+  2. Добавляется запись в таблицы подключения.
   3. Все I²C устройства должны иметь уникальный адрес.
 - Пользователь должен иметь возможность через веб-интерфейс добавлять новые устройства **без изменения кода вручную**.
 
@@ -102,8 +109,8 @@ hydrofarm-system/
   - Mosquitto → брокер MQTT для передачи данных от ESP32.
   - PostgreSQL → основная база данных.
 - **Backend (Python)**:
-  - Считывает данные с Raspberry Pi и ESP32.
-  - Обрабатывает сигналы и пишет в БД.
+  - Считывает данные с Raspberry Pi и ESP32 через MQTT.
+  - Обрабатывает сигналы и пишет в PostgreSQL.
   - Предоставляет API для веб-интерфейса.
 - **Web / API (HTML + CSS + JS)**:
   - Отображение данных пользователю.
@@ -127,7 +134,7 @@ client = mqtt.Client("rasp_pi")
 client.connect("localhost", 1883, 60)
 
 def read_sensors():
-    # TODO: добавить код для чтения датчиков (DS18B20, ADC, etc.)
+    # TODO: добавить код для чтения DS18B20, ADC, и других сенсоров
     return {"PH": 7.0, "TDS": 300}
 
 def main_loop():
@@ -152,11 +159,11 @@ if __name__ == "__main__":
 
 Таблицы подключения датчиков всегда актуальны.
 
-Новый модуль I²C или аналоговый датчик:
+Любой новый модуль I²C или аналоговый датчик:
 
 Проверяется на уникальный адрес.
 
-Документируется в docs/schematics/ и в developer_contract.md.
+Подключение документируется в docs/schematics/ и в developer_contract.md.
 
 История изменений хранится через GitHub.
 
@@ -187,14 +194,26 @@ Raspberry Pi
   ]
 }
 
-9️⃣ Шаблон веб-интерфейса (для будущей масштабируемости)
+9️⃣ Визуальное дерево проекта (Markdown, для GitHub)
+hydrofarm-system/
+├── backend/
+│   ├── app.py
+│   ├── mqtt_client.py
+│   ├── db.py
+│   └── config.py
+├── docker/
+│   ├── mosquitto/
+│   │   └── mosquitto.conf
+│   └── postgres/
+│       ├── postgresql.conf
+│       └── pg_hba.conf
+├── docs/
+│   ├── schematics/
+│   ├── manuals/
+│   └── contracts/
+├── esp32/
+├── web/
+├── .gitignore
+├── LICENSE
+└── README.md
 
-Через браузер пользователь сможет:
-
-Добавлять новые ESP32 и датчики.
-
-Вводить параметры подключения (GPIO, I²C, тип датчика).
-
-Конфигурация автоматически обновляется в JSON/YAML.
-
-Все новые устройства сохраняются в esp32/ и таблицах подключения.
