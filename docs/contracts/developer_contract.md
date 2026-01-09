@@ -48,26 +48,29 @@ hydrofarm-system/
 - Отвечает за питание и управление насосами, клапанами, светом и вентиляторами.
 - Подключается к ESP32 через Wi-Fi / Ethernet.
 
-#### Таблица для программиста
+#### Заметка программиста
 
-| №  | GPIO        | Название       | Тип          | Описание                                | Дополнительная инф.                   | I²C Address |
-|----|------------|----------------|-------------|----------------------------------------|--------------------------------------|-------------|
-| 1  | 21         | FLOW_SENSOR_1  | INPUT       | Импульсы расхода воды                  | ACTIVE LOW                            | -           |
-| 2  | 26         | INLET_VALVE_1  | OUTPUT      | Клапан подачи воды 12V                 | ACTIVE LOW                            | -           |
-| 3  | 17         | PUMP_1         | OUTPUT      | Насос 1 (основной)                     | ACTIVE LOW                            | -           |
-| 4  | 27         | PUMP_2         | OUTPUT      | Насос 2 (резервный)                    | ACTIVE LOW                            | -           |
-| 5  | 5          | PUMP_3         | OUTPUT      | Насос 3 (дозирующий)                   | ACTIVE LOW                            | -           |
-| 6  | 6          | PUMP_4         | OUTPUT      | Насос 4 (дозирующий)                   | ACTIVE LOW                            | -           |
-| 7  | 13         | PUMP_5         | OUTPUT      | Насос 5 (дозирующий)                   | ACTIVE LOW                            | -           |
-| 8  | 19         | PUMP_6         | OUTPUT      | Насос 6 (дозирующий)                   | ACTIVE LOW                            | -           |
-| 9  | 22         | LIGHT_1        | OUTPUT      | Свет                                   | RELAY, 5V, ACTIVE LOW                 | -           |
-| 10 | 23         | FAN_1          | OUTPUT      | Вентиляторы                             | RELAY, 5V, ACTIVE LOW                 | -           |
-| 11 | 24         | FILL_VALVE_2   | OUTPUT      | Клапан долива                           | RELAY, 5V, ACTIVE LOW                 | -           |
-| 12 | A0 (ADS1115)| PH_SENSOR      | ANALOG_INPUT| pH-датчик через делитель 10k/10k       | ADC ×2 для реального значения         | 0x48        |
-| 13 | A1 (ADS1115)| TDS_SENSOR     | ANALOG_INPUT| TDS-датчик через делитель 10k/10k      | ADC ×2 для реального значения         | 0x49        |
-| 14 | 4          | WATER_TEMP_1   | INPUT       | Температура воды (DS18B20, 1-Wire)    | Подтяжка 4.7kΩ, питание 3.3V AMS1117 | -           |
-| 15 | 18         | ULTRASONIC_TRIG_1 | OUTPUT   | УЗ датчик уровня (Trig)                | 3.3V                                   | -           |
-| 16 | 25         | ULTRASONIC_ECHO_1 | INPUT    | УЗ датчик уровня (Echo)                | 5V → 3.3V делитель                     | -           |
+| №  | GPIO        | Название       | Тип          | Описание                                | Дополнительная инф.                                                                                      | I²C_ADDRESS / Канал |
+|----|------------|----------------|-------------|----------------------------------------|--------------------------------------------------------------------------------------------------------|-------------------|
+| 1  | 21         | FLOW_SENSOR_1  | INPUT       | Импульсы расхода воды                  | INPUT, PULSE, 3.3V (ACTIVE LOW (импульс = Low))                                                      | -                 |
+| 2  | 26         | INLET_VALVE_1  | OUTPUT      | Клапан подачи воды 12V                 | OUTPUT, RELAY, ACTIVE LOW                                                                               | -                 |
+| 3  | 17         | PUMP_1         | OUTPUT      | Насос 1 (основной для подачи в общую систему) | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                     | -                 |
+| 4  | 27         | PUMP_2         | OUTPUT      | Насос 2 (резервный для подачи в общую систему) | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                     | -                 |
+| 5  | 5          | PUMP_3         | OUTPUT      | Насос 3 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                            | -                 |
+| 6  | 6          | PUMP_4         | OUTPUT      | Насос 4 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                            | -                 |
+| 7  | 13         | PUMP_5         | OUTPUT      | Насос 5 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                            | -                 |
+| 8  | 19         | PUMP_6         | OUTPUT      | Насос 6 (дозирующий)                   | OUTPUT, RELAY, ACTIVE LOW (5V->12V->Motor)                                                            | -                 |
+| 9  | 22         | LIGHT_1        | OUTPUT      | Свет                                   | RELAY, 5V, ACTIVE LOW                                                                                  | -                 |
+| 10 | 23         | FAN_1          | OUTPUT      | Вентиляторы                             | RELAY, 5V, ACTIVE LOW                                                                                  | -                 |
+| 11 | 24         | FILL_VALVE_2   | OUTPUT      | Клапан долива                           | RELAY, 5V, ACTIVE LOW                                                                                  | -                 |
+| 12 |            | RESERVED_1     |             | Резервный                               |                                                                                                        | -                 |
+| 13 | A0 (ADS1115)| PH_SENSOR_1   | ANALOG_INPUT| pH-датчик через делитель 10k/10k       | «ADC измеряет напряжение после делителя 10 кΩ/10 кΩ, для получения реального значения ×2»             | 0x48 / A0         |
+| 14 | A1 (ADS1115)| TDS_SENSOR_1  | ANALOG_INPUT| TDS-датчик через делитель 10k/10k      | «ADC измеряет напряжение после делителя 10 кΩ/10 кΩ, для получения реального значения ×2»             | 0x48 / A1         |
+| 15 | A2 (ADS1115)| RESERVED_2    | ANALOG_INPUT| Резервный                               | Для будущих аналоговых датчиков                                                                        | 0x48 / A2         |
+| 16 | A3 (ADS1115)| RESERVED_3    | ANALOG_INPUT| Резервный                               | Для будущих аналоговых датчиков                                                                        | 0x48 / A3         |
+| 17 | 4          | WATER_TEMP_1   | INPUT       | Температура воды (DS18B20, 1-Wire)    | DS18B20 подключён по 1-Wire к GPIO4. Подтяжка 4.7kΩ к 3.3 В. Питание от AMS1117. Можно несколько датчиков на одной линии | -                 |
+| 18 | 18         | ULTRASONIC_TRIG_1 | OUTPUT   | УЗ датчик уровня (Trig)                | OUTPUT, 3.3 V, 1 GPIO на Trig                                                                         | -                 |
+| 19 | 25         | ULTRASONIC_ECHO_1 | INPUT    | УЗ датчик уровня (Echo)                | INPUT, 5V → 3.3V делитель, 1 GPIO на Echo                                                            | -                 |
 
 ---
 
