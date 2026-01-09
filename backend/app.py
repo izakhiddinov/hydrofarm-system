@@ -1,16 +1,15 @@
-import time
 from mqtt_client import start_mqtt
+import time
 
 def main():
+    print("HydroFarm backend starting...")
     mqtt_client = start_mqtt()
-    mqtt_client.loop_start()
 
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        mqtt_client.loop_stop()
-        print("Backend stopped")
+        print("Stopping backend")
 
 if __name__ == "__main__":
     main()
