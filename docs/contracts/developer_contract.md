@@ -142,6 +142,7 @@ ESP32 (модули для масштабирования) — Заметка п
     * Взаимодействие с Backend через REST или WebSocket.
 
 6️⃣ Пример Python-кода для Raspberry Pi
+```
 import time
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
@@ -168,6 +169,7 @@ def main_loop():
 
 if __name__ == "__main__":
     main_loop()
+```
 
 7️⃣ Контракт для разработчиков
 
