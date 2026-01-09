@@ -1,2 +1,11 @@
-# Работа с PostgreSQL
-# TODO: функции для записи и чтения данных
+import psycopg2
+from config import *
+
+def get_connection():
+    return psycopg2.connect(
+        host=POSTGRES_HOST,
+        port=POSTGRES_PORT,
+        dbname=POSTGRES_DB,
+        user=POSTGRES_USER,
+        password=POSTGRES_PASSWORD
+    )
