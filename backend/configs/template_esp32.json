@@ -1,0 +1,79 @@
+{
+  "device_id": "esp32_01",
+  "device_name": "ESP32 зона 1",
+  "zone": "zone_1",
+  "sensors": [
+    {
+      "name": "CO2/VOC_1",
+      "type": "I2C",
+      "gpio": null,
+      "i2c_address": "0x5A",
+      "unit": "ppm / VOC",
+      "enabled": true
+    },
+    {
+      "name": "illumination_1",
+      "type": "I2C",
+      "gpio": null,
+      "i2c_address": "0x23",
+      "unit": "lux",
+      "enabled": true
+    },
+    {
+      "name": "temp_humidity_1",
+      "type": "DIGITAL_INPUT",
+      "gpio": 4,
+      "i2c_address": null,
+      "unit": "°C / %",
+      "enabled": true
+    },
+    {
+      "name": "soil_moistureAn_1",
+      "type": "ANALOG_INPUT",
+      "gpio": 34,
+      "i2c_address": null,
+      "unit": "ADC",
+      "enabled": true
+    },
+    {
+      "name": "soil_moistureDig_1",
+      "type": "DIGITAL_INPUT",
+      "gpio": 23,
+      "i2c_address": null,
+      "unit": "binary",
+      "enabled": true
+    },
+    {
+      "name": "LCD_16x2_I2C",
+      "type": "I2C",
+      "gpio": null,
+      "i2c_address": "0x27",
+      "unit": "text",
+      "enabled": true
+    },
+    {
+      "name": "ULTRASONIC_TRIG_1",
+      "type": "DIGITAL_OUTPUT",
+      "gpio": 18,
+      "i2c_address": null,
+      "unit": "pulse",
+      "enabled": true
+    },
+    {
+      "name": "ULTRASONIC_ECHO_1",
+      "type": "DIGITAL_INPUT",
+      "gpio": 25,
+      "i2c_address": null,
+      "unit": "distance_cm",
+      "enabled": true
+    },
+    {
+      "name": "ESP32_POWER",
+      "type": "POWER",
+      "gpio": null,
+      "i2c_address": null,
+      "unit": "V",
+      "enabled": true
+    }
+  ]
+}
