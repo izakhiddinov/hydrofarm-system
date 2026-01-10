@@ -40,6 +40,7 @@ docker-compose up -d
 
 4. Backend автоматически подключается к этим сервисам через переменные окружения в docker-compose.yml.
 
+
 3️⃣ Работа с template_esp32.json
 
 Для добавления нового ESP32 модуль:
@@ -53,6 +54,7 @@ docker-compose up -d
 Сохранить файл в backend/configs/ с уникальным именем (например: esp32_module_02.json).
 
 JSON файлы backend читает динамически, чтобы новые ESP32 добавлялись без правки кода Python.
+
 
 4️⃣ Разработка Python кода
 
