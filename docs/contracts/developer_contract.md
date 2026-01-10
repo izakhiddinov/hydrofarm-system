@@ -35,7 +35,8 @@ hydrofarm-system/
 │   │   └── README.md
 │   ├── esp32_module_01/
 │   │   └── esp32_module_01.ino
-│   ├── config.h
+│   │   └── config.h
+│   │   └── README.md
 │   └── README.md
 │
 ├── docs/
