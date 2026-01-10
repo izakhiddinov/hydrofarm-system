@@ -13,6 +13,8 @@ backend/
 ├── config.py
 ├── gpio.py
 ├── requirements.txt
+├── README.md
+├── Dockerfile
 └── configs/
     └── template_esp32.json
 ```
