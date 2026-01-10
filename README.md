@@ -64,10 +64,12 @@ docker-compose ps
 
 ⚙️ Подключение сервисов между собой
 ```
-Сервис	Хост (для других контейнеров)	Порт
-Mosquitto	mosquitto	1883
-PostgreSQL	postgres	5432
-Backend	backend	8000
+| Сервис      | Хост (для других контейнеров) | Порт  |
+|------------|-------------------------------|-------|
+| Mosquitto  | `mosquitto`                   | 1883  |
+| PostgreSQL | `postgres`                    | 5432  |
+| Backend    | `backend`                     | 8000  |
+
 ```
 
 * Backend будет использовать MQTT_BROKER=mosquitto и POSTGRES_HOST=postgres из docker-compose.yml.
