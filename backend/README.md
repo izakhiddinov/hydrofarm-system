@@ -34,9 +34,9 @@ docker-compose up -d
 ```
 3. Убедиться, что работают:
 
-* Mosquitto → mqtt://mosquitto:1883
+    * Mosquitto → mqtt://mosquitto:1883
 
-* PostgreSQL → postgres:5432
+    * PostgreSQL → postgres:5432
 
 4. Backend автоматически подключается к этим сервисам через переменные окружения в docker-compose.yml.
 
