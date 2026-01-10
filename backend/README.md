@@ -43,30 +43,30 @@ docker-compose up -d
 
 3️⃣ Работа с template_esp32.json
 
-Для добавления нового ESP32 модуль:
+* Для добавления нового ESP32 модуль:
 
-Сделать копию template_esp32.json.
+    1. Сделать копию template_esp32.json.
 
-Изменить device_id на уникальный.
+    2. Изменить device_id на уникальный.
 
-Указать правильные GPIO, I²C адреса и сенсоры.
+    3. Указать правильные GPIO, I²C адреса и сенсоры.
 
-Сохранить файл в backend/configs/ с уникальным именем (например: esp32_module_02.json).
+    4. Сохранить файл в backend/configs/ с уникальным именем (например: esp32_module_02.json).
 
-JSON файлы backend читает динамически, чтобы новые ESP32 добавлялись без правки кода Python.
+* JSON файлы backend читает динамически, чтобы новые ESP32 добавлялись без правки кода Python.
 
 
 4️⃣ Разработка Python кода
 
-app.py → основной скрипт backend.
+* app.py → основной скрипт backend.
 
-mqtt_client.py → подписка на топики MQTT, получение данных от ESP32.
+* mqtt_client.py → подписка на топики MQTT, получение данных от ESP32.
 
-db.py → работа с PostgreSQL.
+* db.py → работа с PostgreSQL.
 
-config.py → глобальные настройки проекта.
+* config.py → глобальные настройки проекта.
 
-gpio.py → взаимодействие с GPIO Raspberry Pi (если нужно).
+* gpio.py → взаимодействие с GPIO Raspberry Pi (если нужно).
 
 5️⃣ Проверка работы
 ```
