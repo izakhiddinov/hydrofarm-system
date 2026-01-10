@@ -185,10 +185,11 @@ docker/
 
 ```
 🧱 Сервисы Docker
-Сервис	Имя контейнера	Хост внутри Docker	Порт
-Mosquitto	hydrofarm-mosquitto	mosquitto	1883
-PostgreSQL	hydrofarm-postgres	postgres	5432
-Backend	hydrofarm-backend	backend	8000
+| Сервис      | Имя контейнера        | Хост внутри Docker | Порт |
+|------------|------------------------|--------------------|------|
+| Mosquitto  | hydrofarm-mosquitto   | `mosquitto`        | 1883 |
+| PostgreSQL | hydrofarm-postgres    | `postgres`         | 5432 |
+| Backend    | hydrofarm-backend     | `backend`          | 8000 |
 ```
 
 
