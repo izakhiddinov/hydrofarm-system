@@ -30,9 +30,9 @@ esp32/
 * config.h – конфигурационный файл модуля:
 
   * определяет пины сенсоров, I²C адреса, параметры частоты опроса датчиков, порты MQTT.
-  ```
+ 
   * Пример содержимого:
-    
+    ```
     #define DEVICE_ID "esp32_module_01"
     #define CO2_VOC_PIN_SDA 21
     #define CO2_VOC_PIN_SCL 22
