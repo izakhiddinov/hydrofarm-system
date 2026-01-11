@@ -50,7 +50,7 @@ hydrofarm-system/
 │       └── developer_contract.md
 │
 ├── web/
-│   └── .gitkeep
+│   └── README.md
 ├── .gitignore
 ├── LICENSE
 └── README.md
