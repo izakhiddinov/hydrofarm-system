@@ -28,6 +28,7 @@ hydrofarm-system/
 │       ├── pg_hba.conf
 │       ├── postgresql.conf
 │       └── README.md
+│   └── README.md
 │   └── docker-compose.yml
 │
 ├── esp32/
