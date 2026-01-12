@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mqtt_client import start_mqtt
-from db import get_connection
+from db import get_connection, init_db
 import uvicorn
 import threading
 
 app = FastAPI(title="HydroFarm Smart Platform")
 
-# Разрешаем фронтенду подключаться
+# Настройка CORS, чтобы Талгат мог подключаться со своего компьютера
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -44,8 +44,15 @@ def get_devices():
 
 def main():
     print("🚀 HydroFarm Smart Platform starting...", flush=True)
+    
+    # Сначала проверяем базу и создаем таблицы
+    init_db()
+
+    # Затем запускаем MQTT клиент в отдельном потоке
     mqtt_thread = threading.Thread(target=start_mqtt, daemon=True)
     mqtt_thread.start()
+    
+    print("📡 API available at http://localhost:8000", flush=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 if __name__ == "__main__":
