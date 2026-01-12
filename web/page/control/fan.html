@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/fan.css">
+    <title>Fan</title> 
+</head>
+<body>
+    
+    <section class="main">
+
+        <div class="main-block">
+            <a class="main-back" href="control.html">Назад</a>
+            <p class="main-title">Вентилятор</p>
+        </div>
+
+        <div class="main-container">
+            <div class="control">
+            
+ 
+            <div class="form-group">
+                <label class="form-title" for="fan-power">Вкл/Выкл</label>
+                <label class="switch">
+                    <input id="fan-power" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Скорость -->
+            <div class="form-group">
+                <label class="form-title" for="fan-speed">Скорость</label>
+                <div class="speed-control">
+                    <input id="fan-speed" type="range" min="70" max="255" value="128">
+                    <span class="speed-value">128</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title" for="fan-speed">Длительность</label>
+            </div>
+
+            <!-- Режим авто -->
+            <div class="form-group">
+                <label class="form-title" for="fan-auto">Авто</label>
+                <label class="switch">
+                    <input id="fan-auto" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="sensor-display">
+                <div class="sensor-item">
+                    <span class="sensor-label">Температура:</span>
+                    <span id="temp-val">--</span>°C
+                </div>
+                <div class="sensor-item">
+                    <span class="sensor-label">Влажность:</span>
+                    <span id="hum-val">--</span>%
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title">Цикл (мин)</label>
+                <div class="form-block-time">
+                    <input type="number" id="fan-on-min" placeholder="Вкл" style="width: 60px;">
+                    <input type="number" id="fan-off-min" placeholder="Выкл" style="width: 60px;">
+                </div>
+            </div>
+
+            <!-- Таймер времени -->
+            <div class="form-group">
+                <label class="form-title">Время работы</label>
+                <div class="form-block-time">
+                    <div class="form-time">
+                        <p>От:</p>
+                        <input type="time" id="fan-time-start">
+                    </div>
+                    <div class="form-time">
+                        <p>До:</p>
+                        <input type="time" id="fan-time-end">
+                    </div>
+                </div>
+            </div>
+
+            <button class="form-save">Сохранить</button>
+        </div>
+        </div>
+    </section>
+
+</body>
+</html>
+
+<script>
+    // Получаем элементы управления
+    const fanPower = document.getElementById('fan-power');
+    const fanSpeed = document.getElementById('fan-speed');
+    const speedValueDisplay = document.querySelector('.speed-value');
+    const fanAuto = document.getElementById('fan-auto');
+    const timeStart = document.getElementById('fan-time-start');
+    const timeEnd = document.getElementById('fan-time-end');
+    const saveBtn = document.querySelector('.form-save');
+
+    // 1. Обновление текстового значения скорости при движении ползунка
+    fanSpeed.addEventListener('input', () => {
+        speedValueDisplay.textContent = fanSpeed.value;
+    });
+
+    // 2. Функция для сбора всех данных
+    function saveSettings() {
+        const settings = {
+            power: fanPower.checked,
+            speed: parseInt(fanSpeed.value),
+            autoMode: fanAuto.checked,
+            schedule: {
+                from: timeStart.value,
+                to: timeEnd.value
+            },
+            timestamp: new Date().toISOString()
+        };
+
+        // Добавьте это в функцию saveSettings
+const cycling = {
+    onTime: document.getElementById('fan-on-min').value,
+    offTime: document.getElementById('fan-off-min').value
+};
+
+if (cycling.onTime > 0) {
+    console.log(`Режим гидропоники: работаем ${cycling.onTime} мин, спим ${cycling.offTime} мин`);
+}
+
+        // Демонстрация результата в консоли
+        console.log("Настройки сохранены:", settings);
+
+        // Визуальный фидбек для пользователя
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = "Сохранено!";
+        saveBtn.style.background = "#27ae60"; // Зеленый цвет
+
+        setTimeout(() => {
+            saveBtn.textContent = originalText;
+            saveBtn.style.background = "#000";
+        }, 2000);
+
+        // Здесь обычно идет код отправки на сервер, например:
+        // fetch('/api/fan/update', { method: 'POST', body: JSON.stringify(settings) });
+    }
+
+    // 3. Слушатель события на кнопку
+    saveBtn.addEventListener('click', saveSettings);
+
+    // Дополнительно: Блокировка ползунка скорости, если вентилятор выключен
+    fanPower.addEventListener('change', () => {
+        fanSpeed.disabled = !fanPower.checked;
+        fanSpeed.style.opacity = fanPower.checked ? "1" : "0.5";
+    });
+</script>
+
+<script>
+    // Подключение к WebSocket Hub
+const ws = new WebSocket("ws://<Raspberry_IP>:8000/ws"); // замени на IP Raspberry Pi
+
+ws.onopen = () => console.log("WebSocket connected");
+ws.onclose = () => console.log("WebSocket disconnected");
+
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    // Предположим, что у нас один Node с зоной "fan-zone"
+    for (const node_id in data) {
+        const node = data[node_id];
+        if (node.temperature !== undefined) {
+            document.getElementById('temp-val').textContent = node.temperature;
+        }
+        if (node.humidity !== undefined) {
+            document.getElementById('hum-val').textContent = node.humidity;
+        }
+    }
+};
+// Отправка настроек на сервер
+fetch(`http://<Raspberry_IP>:8000/api/fan/${fanId}/update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(settings)
+})
+.then(res => res.json())
+.then(resp => console.log("Сервер ответил:", resp))
+.catch(err => console.error("Ошибка отправки настроек:", err));
+
+</script>

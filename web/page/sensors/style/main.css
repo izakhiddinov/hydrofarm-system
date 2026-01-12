@@ -1,0 +1,136 @@
+.main{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-block{
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-back {
+    position: fixed; /* лучше чем absolute */
+    top: 20px;
+    left: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 14px;
+    background: #ffffff;
+    border-radius: 999px;
+
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+/* hover */
+.main-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+/* active */
+.main-back:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+
+.main-title{
+    font-size: 48px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.main-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* лучше чем space-around */
+    gap: 50px;
+    margin-top: 50px;
+}
+
+/* Карточка */
+.sensor {
+    width: 280px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Лёгкий hover (по желанию) */
+.sensor:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.sensor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sensor-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sensor-zone {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    padding: 4px 10px;
+    background: #111;
+    border-radius: 999px;
+}
+
+.sensor-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.sensor-row:last-child {
+    border-bottom: none;
+}
+
+.sensor-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.sensor-value {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Текущие показания */
+.sensor-value.current {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2e7dff;
+}
+
+.sensor.ok .current { color: #2ecc71; }
+.sensor.warn .current { color: #f1c40f; }
+.sensor.danger .current { color: #e74c3c; }

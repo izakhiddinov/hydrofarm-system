@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/all.css">
+    <title>Hydroponics control</title>
+</head>
+<body>
+
+    <img class="bg-image" src="image/abstract-blurred-background-with-plants-generative-ai.jpg" alt="">
+
+    <section class="main">
+        <div class="main-container">
+            <div class="main-block">
+                <img class="main-block-image" src="image/leaf.svg" alt="">
+                <p class="main-title">Hydroponics</p>
+                <img class="main-block-image" src="image/leaf.svg" alt="">
+            </div>
+
+            <a class="main-link" href="page/cult/cult.html">
+                <img class="main-image" src="image/circle-plus.svg" alt="">
+                <p class="main-text">Новая культура</p>
+            </a>
+
+            <a class="main-link" href="page/sensors/sensors.html">
+                <img class="main-image" src="image/activity.svg" alt="">
+                <p class="main-text">Датчики</p>
+            </a>
+
+            <a class="main-link" href="page/control/control.html">
+                <img class="main-image" src="image/sliders-vertical.svg" alt="">
+                <p class="main-text">Управление</p>
+            </a>
+
+            <a class="main-link" href="page/layers/layers.html">
+                <img class="main-image" src="image/layers.svg" alt="">
+                <p class="main-text">Режимы</p>
+            </a>
+
+            <a class="main-link" href="page/history/history.html">
+                <img class="main-image" src="image/clipboard-clock.svg" alt="">
+                <p class="main-text">История</p>
+            </a>
+
+            <a class="main-link" href="page/settings/settings.html">
+                <img class="main-image" src="image/settings.svg" alt="">
+                <p class="main-text">Настройки</p>
+            </a>
+
+        </div>
+    </section>
+    
+</body>
+</html>     
+
+<script>
+const bg = document.querySelector('.bg-image');
+
+document.addEventListener('mousemove', (e) => {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const moveX = (e.clientX - centerX) / centerX;
+    const moveY = (e.clientY - centerY) / centerY;
+
+    const maxShift = 15; // уменьшил смещение, чтобы края не уходили
+
+    bg.style.transform = `translate(-50%, -50%) translate(${moveX * maxShift}px, ${moveY * maxShift}px)`;
+});
+
+</script>
+
+

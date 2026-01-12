@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/lux.css">
+    
+    <title>Управление освещением</title>
+    
+</head>
+<body>
+
+    <section class="main">
+        <div class="main-block">
+            <a class="main-back" href="control.html">Назад</a>
+            <p class="main-title">Освещение</p>
+        </div>
+
+        <div class="status-card">
+            <div class="status-val" id="light-status-text">Свет выключен</div>
+            <div id="day-length-info" style="font-size: 12px; margin-top: 5px;">Режим: не задан</div>
+        </div>
+
+        <div class="control">
+            <div class="form-group">
+                <label class="form-title">Основной свет</label>
+                <label class="switch">
+                    <input id="light-power" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title">Яркость (DLI)</label>
+                <div class="speed-control">
+                    <input id="light-brightness" type="range" min="0" max="255" value="255">
+                    <span class="speed-value">100%</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title">Автоматика (Фотопериод)</label>
+                <label class="switch">
+                    <input id="light-auto" type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title">Световой день</label>
+                <div class="form-block-time">
+                    <input type="time" id="light-start" value="06:00">
+                    <span>—</span>
+                    <input type="time" id="light-end" value="18:00">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-title">Мягкий рассвет (мин)</label>
+                <input type="number" id="sunrise-duration" value="15" style="width: 60px;">
+            </div>
+
+            <button class="form-save" id="save-btn">Сохранить режим</button>
+        </div>
+    </section>
+
+    <script>
+        const lightPower = document.getElementById('light-power');
+        const brightness = document.getElementById('light-brightness');
+        const brightVal = document.querySelector('.speed-value');
+        const lightAuto = document.getElementById('light-auto');
+        const saveBtn = document.getElementById('save-btn');
+
+        // 1. Отображение яркости в %
+        brightness.addEventListener('input', () => {
+            const percent = Math.round((brightness.value / 255) * 100);
+            brightVal.textContent = percent + '%';
+            
+            // Если яркость > 0, включаем чекбокс питания автоматически
+            if (brightness.value > 0) lightPower.checked = true;
+            else lightPower.checked = false;
+        });
+
+        // 2. Функция расчета длительности дня
+        function updateDayInfo() {
+            const start = document.getElementById('light-start').value;
+            const end = document.getElementById('light-end').value;
+            if (start && end) {
+                document.getElementById('day-length-info').textContent = `Режим: ${start} — ${end}`;
+            }
+        }
+
+        // 3. Сохранение настроек (отправка на Raspberry Pi)
+        saveBtn.addEventListener('click', async () => {
+            const settings = {
+                device: "lighting",
+                power: lightPower.checked,
+                brightness: parseInt(brightness.value),
+                auto: lightAuto.checked,
+                schedule: {
+                    on: document.getElementById('light-start').value,
+                    off: document.getElementById('light-end').value,
+                    sunrise: document.getElementById('sunrise-duration').value
+                }
+            };
+
+            console.log("Настройки света отправлены:", settings);
+
+            // Анимация кнопки
+            saveBtn.textContent = "✓ Применено";
+            saveBtn.style.background = "#2ecc71";
+            
+            updateDayInfo();
+
+            // Отправка на ваш Python сервер
+            try {
+                await fetch('/api/control', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(settings)
+                });
+            } catch (e) { console.error("Ошибка сети"); }
+
+            setTimeout(() => {
+                saveBtn.textContent = "Сохранить режим";
+                saveBtn.style.background = "#2d3436";
+            }, 2000);
+        });
+
+        // 4. Получение данных DHT22 (для мониторинга под панелью)
+        async function fetchSensors() {
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+                document.getElementById('temp-val').textContent = data.temp.toFixed(1);
+                document.getElementById('hum-val').textContent = data.hum.toFixed(1);
+            } catch (e) {}
+        }
+        setInterval(fetchSensors, 5000);
+
+        // Блокировка настроек при ручном управлении
+        lightAuto.addEventListener('change', () => {
+            const isAuto = lightAuto.checked;
+            document.getElementById('light-start').disabled = !isAuto;
+            document.getElementById('light-end').disabled = !isAuto;
+        });
+
+    </script>
+</body>
+</html>

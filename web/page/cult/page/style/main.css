@@ -1,0 +1,363 @@
+:root {
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #000000;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Inter', system-ui, sans-serif; 
+}
+
+body { 
+    background-color: var(--bg); 
+    color: var(--text-main); 
+    display: flex; 
+    justify-content: 
+    center; 
+    padding: 20px; 
+}
+
+.main-block{
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-back {
+    position: fixed; /* лучше чем absolute */
+    top: 20px;
+    left: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 6px 14px;
+    background: #ffffff;
+    border-radius: 999px;
+
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+.main-back::before {
+    content: "←";
+    margin-right: 6px;
+    transition: transform 0.2s;
+}
+
+/* hover */
+.main-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    color: #111111;
+}
+
+.main-back:hover::before {
+    transform: translateX(-3px);
+}
+
+/* active */
+.main-back:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.main-image{
+    width: 40px;
+    height: 40px;
+}
+
+.main-title{
+    font-size: 48px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.app-container { 
+    width: 100%; 
+    max-width: 800px; 
+    margin-top: 40px; 
+}
+
+/* Header */
+.top-nav { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin-bottom: 30px; 
+}
+.back-btn { 
+    text-decoration: none; 
+    color: var(--text-main); 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    font-weight: 500; 
+    transition: 0.2s; 
+}
+
+.back-btn:hover { 
+    color: var(--primary); 
+    transform: translateX(-3px); 
+}
+
+.page-title { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+}
+
+.status-dot { 
+    width: 10px; 
+    height: 10px; 
+    background: var(--primary); 
+    border-radius: 50%; 
+    box-shadow: 0 0 10px var(--primary); 
+}
+
+/* Card */
+.card-glass { 
+    background: var(--card-bg); 
+    border-radius: 24px; 
+    padding: 24px; 
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); 
+    border: 1px solid var(--border); 
+}
+
+.group-label { 
+    display: block; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    color: var(--text-muted); 
+    margin-bottom: 8px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+}
+
+/* Custom Select */
+.custom-select { 
+    position: relative; 
+    margin-bottom: 24px; 
+}
+.custom-select select { 
+    width: 100%; 
+    padding: 12px 16px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border); 
+    appearance: none; font-size: 1rem; 
+    cursor: pointer; 
+}
+
+.custom-select i { 
+    position: absolute; 
+    right: 16px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    pointer-events: none; 
+    color: var(--text-muted); 
+}
+
+/* Mode Switch */
+.mode-switch { 
+    display: flex; 
+    background: #f1f5f9; 
+    padding: 4px; 
+    border-radius: 14px; 
+    gap: 4px; 
+}
+
+.mode-btn { 
+    flex: 1; 
+    border: none; 
+    padding: 10px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    color: var(--text-muted); 
+    transition: 0.3s; 
+    background: transparent; 
+}
+
+.mode-btn.active { 
+    background: white; 
+    color: var(--primary); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+}
+
+.divider { 
+    border: none; 
+    border-top: 1px solid var(--border); 
+    margin: 24px 0; 
+}
+
+/* Stats Grid */
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+}
+
+.stat-card { 
+    background: #f8fafc; 
+    padding: 16px; 
+    border-radius: 16px; 
+    border: 1px solid var(--border); 
+}
+
+.stat-card .label { 
+    display: block; 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    margin-bottom: 4px; 
+}
+
+.stat-card .value { 
+    font-size: 1.1rem; 
+    font-weight: 700; 
+}
+
+/* Stepper */
+.stepper-progress { 
+    height: 4px; 
+    background: #f1f5f9; 
+    border-radius: 2px; 
+    margin-bottom: 24px; 
+    overflow: hidden; 
+}
+
+.progress-bar { 
+    height: 100%; 
+    background: var(--primary); 
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.step { 
+    display: none; 
+    animation: slideIn 0.3s ease-out; 
+}
+
+.step.active { 
+    display: block; 
+}
+
+@keyframes slideIn { 
+    from { opacity: 0; 
+        transform: translateY(10px); 
+    } to { opacity: 1; 
+        transform: translateY(0); 
+    } 
+}
+
+.step-title { 
+    margin-bottom: 16px; font-size: 1.1rem; 
+}
+
+.input-field { 
+    margin-bottom: 
+    16px; 
+}
+
+.input-field label { 
+    display: block; 
+    font-size: 0.9rem; 
+    margin-bottom: 6px; 
+    color: var(--text-muted); 
+}
+
+.input-field input { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 10px; 
+    border: 1px solid var(--border); 
+    outline: none; 
+}
+
+.input-field input:focus { 
+    border-color: var(--primary); 
+    border: 2px solid #10b98133; 
+}
+
+/* Footer Buttons */
+.manual-footer { 
+    display: flex; 
+    gap: 12px; 
+    margin-top: 20px; 
+}
+
+.btn-primary, .btn-secondary, .apply-master-btn { 
+    padding: 12px 20px; 
+    border-radius: 12px; 
+    border: none; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.2s; 
+}
+
+.btn-primary { 
+    background: var(--primary); 
+    color: white; flex: 2; 
+}
+
+.btn-secondary { 
+    background: #f1f5f9; 
+    color: var(--text-main); 
+    flex: 1; 
+}
+
+.btn-secondary:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+}
+
+.apply-master-btn { 
+    width: 100%; 
+    background: var(--text-main); 
+    color: white; 
+    margin-top: 24px; 
+    font-size: 1rem;
+}
+
+.apply-master-btn:hover { 
+    background: #000; 
+}
+
+/* Tab Control */
+.tab-content { 
+    display: none; 
+}
+
+.tab-content.active { 
+    display: block; 
+}
+
+.hint-text { 
+    font-size: 0.8rem; 
+    color: var(--text-muted); 
+    text-align: center; 
+    margin-top: 15px; 
+}
+
+.input-number{
+    width: 200px;
+}
+
+.step-block{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,233 @@
+.main{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-back {
+    position: fixed; /* лучше чем absolute */
+    top: 20px;
+    left: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 14px;
+    background: #ffffff;
+    border-radius: 999px;
+
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+.main-back::before {
+    content: "←";
+    margin-right: 6px;
+    transition: transform 0.2s;
+}
+
+/* hover */
+.main-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    color: #111111;
+}
+
+.main-back:hover::before {
+    transform: translateX(-3px);
+}
+
+/* active */
+.main-back:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+
+.main-title{
+    font-size: 48px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.main-container{
+    width: 90%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+    border-radius: 20px;
+}
+
+.main-container {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* ===== Карточка управления ===== */
+.control {
+    width: 600px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Заголовок внутри карточки */
+.control-title {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ===== Группы формы ===== */
+.form-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.form-title {
+    width: 120px;
+    font-size: 16px;
+}
+
+/* ===== Переключатели ===== */
+.switch {
+    position: relative;
+    width: 42px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #000;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(18px);
+    background: #000;
+}
+
+/* ===== Слайдер скорости ===== */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+input[type="range"] {
+    flex: 1;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
+    outline: none;
+    appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    background: #000;
+    border-radius: 50%;
+    cursor: pointer;
+    appearance: none;
+}
+
+.speed-value {
+    width: 40px;
+    text-align: right;
+}
+
+/* ===== Таймер ===== */
+.form-block-time {
+    display: flex;
+    gap: 10px;
+}
+
+.form-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type="time"] {
+    padding: 4px 6px;
+    font-size: 14px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* ===== Кнопка Сохранить ===== */
+.form-save {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 12px;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.form-save:hover {
+    background: #333;
+}
+
+.sensor-display {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: space-around;
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+.sensor-item { font-size: 20px; }
+#temp-val { color: #e74c3c; } /* Красный для тепла */
+#hum-val { color: #3498db; }  /* Синий для влаги */
