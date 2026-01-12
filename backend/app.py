@@ -1,21 +1,20 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # <--- НОВЫЙ ИМПОРТ
+from fastapi.middleware.cors import CORSMiddleware
 from mqtt_client import start_mqtt
 from db import get_connection
 import uvicorn
 import threading
 
-app = FastAPI(title="HydroFarm API")
+app = FastAPI(title="HydroFarm Smart Platform")
 
-# --- НОВЫЙ БЛОК: РАЗРЕШАЕМ ВСЕМУ МИРУ ЗАПРАШИВАТЬ ДАННЫЕ ---
+# Разрешаем фронтенду подключаться
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Разрешить все сайты (для разработки это ок)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# ---------------------------------------------------------
 
 @app.get("/data")
 def get_data():
@@ -30,8 +29,21 @@ def get_data():
     except Exception as e:
         return {"error": str(e)}
 
+@app.get("/devices")
+def get_devices():
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT device_id, device_name, is_active FROM devices")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return [{"id": r[0], "name": r[1], "active": r[2]} for r in rows]
+    except Exception as e:
+        return {"error": str(e)}
+
 def main():
-    print("🌱 HydroFarm API Server starting...", flush=True)
+    print("🚀 HydroFarm Smart Platform starting...", flush=True)
     mqtt_thread = threading.Thread(target=start_mqtt, daemon=True)
     mqtt_thread.start()
     uvicorn.run(app, host="0.0.0.0", port=8000)
