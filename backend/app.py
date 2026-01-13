@@ -7,7 +7,7 @@ import threading
 
 app = FastAPI(title="HydroFarm Smart Platform")
 
-# Настройка CORS, чтобы Талгат мог подключаться со своего компьютера
+# Разрешаем Талгату подключаться к API (CORS)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 1. ПОЛУЧЕНИЕ ДАННЫХ (Для графиков Талгата)
 @app.get("/data")
 def get_data():
     try:
@@ -29,6 +30,7 @@ def get_data():
     except Exception as e:
         return {"error": str(e)}
 
+# 2. СПИСОК УСТРОЙСТВ (Чтобы знать, кто в сети)
 @app.get("/devices")
 def get_devices():
     try:
@@ -42,16 +44,55 @@ def get_devices():
     except Exception as e:
         return {"error": str(e)}
 
+# 3. ОТПРАВКА КОМАНДЫ (Талгат нажимает кнопку в браузере)
+@app.post("/command")
+def send_command(device_id: str, command: str):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO device_commands (device_id, command, status) VALUES (%s, %s, %s)",
+            (device_id, command, "pending")
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {"status": "success", "message": f"Команда {command} записана"}
+    except Exception as e:
+        return {"error": str(e)}
+
+# 4. ВЫДАЧА КОМАНДЫ (Raspberry Pi спрашивает: "Что мне сделать?")
+@app.get("/get_commands")
+def get_commands(device_id: str):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        # Берем самую старую невыполненную команду
+        cur.execute(
+            "SELECT id, command FROM device_commands WHERE device_id = %s AND status = 'pending' ORDER BY created_at ASC LIMIT 1",
+            (device_id,)
+        )
+        row = cur.fetchone()
+        if row:
+            cmd_id, cmd_text = row
+            # Помечаем, что команда ушла на устройство
+            cur.execute("UPDATE device_commands SET status = 'sent' WHERE id = %s", (cmd_id,))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return {"command_id": cmd_id, "command": cmd_text}
+        
+        cur.close()
+        conn.close()
+        return {"command": None}
+    except Exception as e:
+        return {"error": str(e)}
+
 def main():
     print("🚀 HydroFarm Smart Platform starting...", flush=True)
-    
-    # Сначала проверяем базу и создаем таблицы
-    init_db()
-
-    # Затем запускаем MQTT клиент в отдельном потоке
+    init_db() # Проверяем/создаем все таблицы
     mqtt_thread = threading.Thread(target=start_mqtt, daemon=True)
     mqtt_thread.start()
-    
     print("📡 API available at http://localhost:8000", flush=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
