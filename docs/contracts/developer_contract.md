@@ -33,7 +33,6 @@ hydrofarm-system/
 │   	├── template_esp32.json
 │   ├── Dockerfile
 │   ├── README.md
-│   ├── app.py
 │   ├── config.py
 │   ├── db.py
 │   ├── gpio.py

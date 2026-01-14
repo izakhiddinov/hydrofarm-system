@@ -8,22 +8,19 @@ services:
       POSTGRES_DB: hydrofarm
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   hydrofarm-mosquitto:
     image: eclipse-mosquitto:2.0
     container_name: hydrofarm-mosquitto
     ports:
       - "1883:1883"
-    volumes:
-      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
 
   hydrofarm-backend:
     build:
       context: ..
       dockerfile: backend/Dockerfile
     container_name: hydrofarm-backend
+    restart: always
     ports:
       - "8000:8000"
     environment:
@@ -31,37 +28,19 @@ services:
       - POSTGRES_DB=hydrofarm
       - POSTGRES_USER=hydrofarm_user
       - POSTGRES_PASSWORD=hydrofarm_pass
-      - MQTT_BROKER=hydrofarm-mosquitto
+      - PYTHONPATH=/app/backend
     depends_on:
       - hydrofarm-postgres
-      - hydrofarm-mosquitto
-
-  hydrofarm-simulator:
-    build:
-      context: ..
-      dockerfile: backend/Dockerfile
-    container_name: hydrofarm-simulator
-    environment:
-      - MQTT_BROKER=hydrofarm-mosquitto
-    command: python /app/backend/simulator.py
-    depends_on:
-      - hydrofarm-mosquitto
 
   hydrofarm-agent:
     build:
       context: ..
       dockerfile: backend/Dockerfile
     container_name: hydrofarm-agent
-    volumes:
-      - ../devices:/app/devices
-      - ../backend:/app
+    restart: always
     environment:
       - API_URL=http://hydrofarm-backend:8000
-      - PYTHONUNBUFFERED=1
-    command: python /app/devices/rpi_agent.py
+      - PYTHONPATH=/app/backend
+    command: python backend/devices/rpi_agent.py
     depends_on:
       - hydrofarm-backend
-    restart: always
-
-volumes:
-  postgres_data:

@@ -1,79 +1,32 @@
-import psycopg2
-import os
-import time
+import os, time
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 
-def get_connection():
-    """Создает подключение к PostgreSQL с несколькими попытками"""
-    for i in range(5):
+DATABASE_URL = "postgresql://hydrofarm_user:hydrofarm_pass@hydrofarm-postgres/hydrofarm"
+
+engine = create_engine(DATABASE_URL)
+
+def wait_for_db(engine):
+    for i in range(10):
         try:
-            return psycopg2.connect(
-                host=os.getenv("POSTGRES_HOST", "localhost"),
-                database=os.getenv("POSTGRES_DB", "hydrofarm"),
-                user=os.getenv("POSTGRES_USER", "hydrofarm_user"),
-                password=os.getenv("POSTGRES_PASSWORD", "hydrofarm_pass")
-            )
-        except Exception as e:
-            print(f"⌛ Ожидание базы данных (попытка {i+1})... {e}")
+            connection = engine.connect()
+            connection.close()
+            print("✅ Database is ready!")
+            return
+        except OperationalError:
+            print(f"⌛ Waiting for database... {i}/10")
             time.sleep(2)
-    raise Exception("Не удалось подключиться к PostgreSQL")
+    exit(1)
 
-def init_db():
-    """Автоматическое создание всех таблиц при старте бэкенда"""
+wait_for_db(engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
     try:
-        conn = get_connection()
-        cur = conn.cursor()
-        
-        # Создаем структуру таблиц
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS devices (
-                device_id TEXT PRIMARY KEY,
-                device_name TEXT,
-                is_active BOOLEAN DEFAULT FALSE,
-                last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            
-            CREATE TABLE IF NOT EXISTS sensor_data (
-                id SERIAL PRIMARY KEY,
-                device_id TEXT,
-                sensor_name TEXT,
-                value NUMERIC,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS device_commands (
-                id SERIAL PRIMARY KEY,
-                device_id TEXT,
-                command TEXT,
-                status TEXT DEFAULT 'pending',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        
-        # Регистрируем базовое устройство
-        cur.execute("""
-            INSERT INTO devices (device_id, device_name, is_active) 
-            VALUES ('rpi5_main', 'Raspberry Pi 5 Central', TRUE)
-            ON CONFLICT (device_id) DO NOTHING;
-        """)
-        
-        conn.commit()
-        cur.close()
-        conn.close()
-        print("✅ База данных успешно инициализирована (все таблицы на месте).", flush=True)
-    except Exception as e:
-        print(f"❌ Ошибка инициализации базы: {e}", flush=True)
-
-def save_sensor_data(device_id, sensor_name, value):
-    """Сохраняет данные от датчиков в базу (вызывается из mqtt_client.py)"""
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO sensor_data (device_id, sensor_name, value) VALUES (%s, %s, %s)",
-            (device_id, sensor_name, value)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print(f"❌ Ошибка сохранения данных в MQTT: {e}", flush=True)
+        yield db
+    finally:
+        db.close()

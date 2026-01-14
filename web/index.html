@@ -2,58 +2,39 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>HydroFarm Dashboard</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f3; text-align: center; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: white; border-radius: 12px; padding: 15px; margin: 10px; 
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; width: 200px; }
-        .value { font-size: 24px; font-weight: bold; color: #2e7d32; }
-        .time { font-size: 12px; color: #888; }
-        h1 { color: #1b5e20; }
-        .status { color: #d32f2f; font-weight: bold; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroFarm OS</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🌱 HydroFarm Monitor</h1>
-        <p id="connection-status" class="status">Ожидание данных...</p>
-        <div id="data-display"></div>
+
+    <div class="card">
+        <div id="wizard-screen" class="hidden">
+            <h2>🌱 Мастер настройки</h2>
+            <p>Система не настроена. Добавьте первое устройство.</p>
+            <input type="text" id="dev_id" placeholder="Уникальный ID (напр. pump_1)">
+            <input type="text" id="dev_label" placeholder="Название (напр. Насос полива)">
+            <select id="dev_type">
+                <option value="pump">Насос</option>
+                <option value="light">Свет</option>
+                <option value="valve">Клапан</option>
+            </select>
+            <select id="conn_type">
+                <option value="relay">Реле (GPIO)</option>
+                <option value="modbus">Инвертор (Modbus)</option>
+            </select>
+            <input type="number" id="pin_val" placeholder="Номер пина GPIO">
+            <button onclick="saveDevice()">Запустить систему</button>
+        </div>
+
+        <div id="dashboard-screen" class="hidden">
+            <h2>📱 Панель управления</h2>
+            <div id="device-list"></div>
+            <br>
+            <button onclick="location.reload()" style="background: #3498db;">Обновить статус</button>
+        </div>
     </div>
 
-    <script>
-        async function fetchData() {
-            try {
-                // Запрашиваем данные у твоего Backend API
-                const response = await fetch('http://localhost:8000/data');
-                const data = await response.json();
-                
-                if (data.error) throw new Error(data.error);
-
-                document.getElementById('connection-status').innerText = "📡 Связь установлена (Обновление каждые 5 сек)";
-                document.getElementById('connection-status').style.color = "#2e7d32";
-
-                let html = '';
-                // Показываем последние 12 записей
-                data.slice(0, 12).forEach(item => {
-                    html += `
-                        <div class="card">
-                            <div style="font-size: 14px;">${item.sensor}</div>
-                            <div class="value">${item.value}</div>
-                            <div class="time">${item.time.split('.')[0]}</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('data-display').innerHTML = html;
-            } catch (err) {
-                document.getElementById('connection-status').innerText = "❌ Ошибка: проверьте, запущен ли Docker Backend";
-                document.getElementById('connection-status').style.color = "#d32f2f";
-            }
-        }
-
-        // Обновлять данные каждые 5 секунд
-        setInterval(fetchData, 5000);
-        fetchData(); // Первый запуск при открытии
-    </script>
+    <script src="js/wizard.js"></script>
 </body>
 </html>

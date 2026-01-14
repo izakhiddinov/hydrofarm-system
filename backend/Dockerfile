@@ -1,7 +1,16 @@
 FROM python:3.11-slim
+
 WORKDIR /app
-# Мы добавили "backend/" к пути, потому что контекст теперь — корень проекта
+
+# Сначала копируем зависимости и ставим их
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем весь проект
 COPY . .
-CMD ["python", "backend/app.py"]
+
+# Указываем путь поиска модулей, чтобы main.py видел db.py
+ENV PYTHONPATH=/app/backend
+
+# Запускаем сервер
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
