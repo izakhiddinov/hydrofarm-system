@@ -7,52 +7,57 @@
 ```
 hydrofarm-system/
 ├── backend/
-│   ├── app.py
-│   ├── mqtt_client.py
-│   ├── db.py
-│   ├── config.py
-│   ├── gpio.py
+│   ├── app/
+│   	├── models.py
+│   ├── configs/
+│   	├── template_esp32.json
 │   ├── Dockerfile
 │   ├── README.md
+│   ├── app.py
+│   ├── config.py
+│   ├── db.py
+│   ├── gpio.py
+│   ├── main.py
+│   ├── mqtt_client.py
 │   ├── requirements.txt
-│   └── configs/
-│       └── template_esp32.json
-│
-├── docker/
-│   ├── mosquitto/
-│   │   ├── mosquitto.conf
-│   │   └── README.md
-│   │
-│   └── postgres/
-│       ├── init.sql
-│       ├── pg_hba.conf
-│       ├── postgresql.conf
-│       └── README.md
-│   └── README.md
-│   └── docker-compose.yml
-│
-├── esp32/
-│   ├── common/
-│   │   └── README.md
-│   ├── esp32_module_01/
-│   │   └── esp32_module_01.ino
-│   │   └── config.h
-│   │   └── README.md
-│   └── README.md
-│
-├── docs/
-│   ├── schematics/
-│   │   ├── hydrofarm_connections Vers_01.pdf
-│   │   └── hydrofarm_connections Vers_01.vsdx
+├── devices/
+│   	├── rpi_agent.py
+│ 
+└── docker/
+│   ├── mosquito/
+│   	├── README.md
+│   	├── mosquitto.conf
+│   ├── postgres/
+│   	├── README.md
+│   	├── init.sql
+│   	├── pg_hba.conf
+│   	├── postgresql.conf
+│   ├── README.md
+│   ├── docker-compose.yml
+│   ├── mosquitto.conf
+└── docs/
+│   ├── contracts/
+│   	├── developer_contract.md
 │   ├── manuals/
-│   │   └── .gitkeep
-│   └── contracts/
-│       └── developer_contract.md
-│
-├── web/
-│   └── README.md
-├── .gitignore
-├── LICENSE
+│   	├── .gitkeep
+│   ├── schematic/
+│   	├── hydrofarm_connections Vers_01.pdf
+│   	├── hydrofarm_connections Vers_01.vsdx
+└── esp32/
+│   ├── common/
+│   	├── README.md
+│   ├── esp32_module_01/
+│   	├── README.md
+│   	├── config.h
+│   	├── esp32_module_01.ino
+│   ├── README.md
+└── tools/
+│   ├── test_mqtt.py
+└── web/
+│   ├── README.md
+│   ├── index.html
+└── .gitignore
+└── LICENSE
 └── README.md
 ```
 
