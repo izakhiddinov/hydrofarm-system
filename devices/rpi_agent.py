@@ -1,57 +1,42 @@
-import time
-import requests
-import os
+import time, requests, os
 
-# Настройки (PYTHONUNBUFFERED в Docker позволит видеть эти логи сразу)
 API_URL = os.getenv("API_URL", "http://hydrofarm-backend:8000")
 DEVICE_ID = "rpi5_main"
 
-# ПОЛНАЯ ТАБЛИЦА ПОДКЛЮЧЕНИЙ (согласно твоему ТЗ)
-PIN_MAP = {
-    "PUMP_1": 17,
-    "PUMP_2": 27,
-    "PUMP_3": 5,
-    "PUMP_4": 6,
-    "PUMP_5": 13,
-    "PUMP_6": 19,
-    "LIGHT_1": 22,
-    "FAN_1": 23,
-    "INLET_VALVE_1": 26,
-    "FILL_VALVE_2": 24
-}
+class HydroAgent:
+    def __init__(self):
+        self.devices = {}
 
-def execute_command(command_text):
-    # Ищем, какое устройство упоминается в тексте команды
-    for dev_name, pin in PIN_MAP.items():
-        if dev_name in command_text:
-            state = "ON" if "ON" in command_text else "OFF"
-            # Active LOW: ON = 0V (LOW), OFF = 3.3V (HIGH)
-            logic_level = "LOW (0V)" if state == "ON" else "HIGH (3.3V)"
-            
-            print(f"---")
-            print(f"📥 ПОЛУЧЕНА КОМАНДА: {command_text}")
-            print(f"⚙️ ПИН {pin}: {dev_name} переведен в {state} [{logic_level}]")
-            print(f"---")
-            return
-    print(f"⚠️ Внимание: Устройство в команде '{command_text}' не найдено в PIN_MAP")
-
-def main():
-    print(f"🚀 Агент {DEVICE_ID} запущен и готов к работе.")
-    print(f"📋 Загружено устройств: {len(PIN_MAP)}")
-    
-    while True:
+    def sync_hardware_map(self):
         try:
-            # Опрашиваем бэкенд на наличие новых команд
-            response = requests.get(f"{API_URL}/get_commands", params={"device_id": DEVICE_ID}, timeout=5)
-            if response.status_code == 200:
-                commands = response.json()
-                for cmd in commands:
-                    execute_command(cmd["command"])
-            
-        except Exception as e:
-            print(f"❌ Ошибка связи с API: {e}")
+            r = requests.get(f"{API_URL}/api/devices")
+            if r.status_code == 200:
+                self.devices = {d['id']: d for d in r.json()}
+        except:
+            print("❌ Ошибка синхронизации конфига")
+
+    def run_command(self, cmd_text, device_id):
+        config = self.devices.get(device_id)
+        if not config: return
         
-        time.sleep(2) # Интервал опроса
+        state = "ON" if "ON" in cmd_text else "OFF"
+        
+        if config['connection_type'] == "relay":
+            print(f"🔌 GPIO {config['pin_number']} -> {state} (RELAY)")
+            # Здесь физический вызов RPi.GPIO
+        elif config['connection_type'] == "modbus":
+            print(f"📟 MODBUS {config['modbus_address']} -> {state} (INVERTER)")
+
+    def start(self):
+        while True:
+            self.sync_hardware_map()
+            try:
+                r = requests.get(f"{API_URL}/api/agent/get_commands", params={"device_id": DEVICE_ID})
+                if r.status_code == 200:
+                    for c in r.json():
+                        self.run_command(c['command'], c['device_id'])
+            except: pass
+            time.sleep(2)
 
 if __name__ == "__main__":
-    main()
+    HydroAgent().start()

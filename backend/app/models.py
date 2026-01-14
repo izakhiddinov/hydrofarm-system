@@ -1,33 +1,33 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from .database import Base
+from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+import datetime
+
+Base = declarative_base()
 
 class DeviceConfig(Base):
-    """
-    Универсальная таблица для ВСЕХ устройств (насосы, клапаны, свет).
-    Пользователь может добавлять их по одному, менять пины или переходить на инверторы.
-    """
     __tablename__ = "devices"
-
-    # Уникальный ID, например 'pump_main' или 'valve_1'
-    id = Column(String, primary_key=True, index=True)
-    
-    # Что это? 'pump' (насос), 'valve' (клапан), 'fan' (вентилятор), 'light' (свет)
-    device_type = Column(String, default="pump")
-    
-    # Красивое имя для пользователя: 'Главный полив'
-    label = Column(String)
-    
-    # Выбор: 'relay' (GPIO) или 'modbus' (Инвертор)
-    connection_type = Column(String, default="relay")
-    
-    # Номер пина (если реле)
+    id = Column(String, primary_key=True, index=True) # pump_1
+    device_type = Column(String, default="pump")    # pump, valve, light
+    label = Column(String)                           # Насос основной
+    connection_type = Column(String, default="relay") # relay, modbus
     pin_number = Column(Integer, nullable=True)
-    
-    # Адрес Modbus (если инвертор)
     modbus_address = Column(Integer, nullable=True)
-    
-    # Доп. настройки
-    has_speed_control = Column(Boolean, default=False) # Есть ли ползунок скорости
-    backup_device_id = Column(String, nullable=True)   # ID насоса-дублера
-    
+    has_speed_control = Column(Boolean, default=False)
+    backup_device_id = Column(String, nullable=True)
     status = Column(String, default="offline")
+
+class SensorData(Base):
+    __tablename__ = "sensor_data"
+    id = Column(Integer, primary_key=True, index=True)
+    device_id = Column(String)
+    sensor_name = Column(String)
+    value = Column(Float)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class DeviceCommand(Base):
+    __tablename__ = "device_commands"
+    id = Column(Integer, primary_key=True, index=True)
+    device_id = Column(String)
+    command = Column(String)
+    status = Column(String, default="pending") # pending, sent, executed
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
