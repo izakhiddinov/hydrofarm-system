@@ -1,0 +1,56 @@
+[
+  {
+    "id": "flow_sensor_pulse",
+    "category": "Датчик расхода",
+    "direction": "IN",
+    "model_name": "FLOW_SENSOR_1",
+    "voltage": "3.3V",
+    "interface": "GPIO_PULSE",
+    "schema_type": "sensor_pullup",
+    "module_offer": "FLOW_SENSOR_V01",
+    "desc": "Счетчик воды. Требует резистор 10кОм (R2) к 3.3V. Логика: Active Low."
+  },
+  {
+    "id": "inlet_valve_relay",
+    "category": "Клапан",
+    "direction": "OUT",
+    "model_name": "INLET VALVE 1 (12V)",
+    "voltage": "12V",
+    "interface": "GPIO_OUT",
+    "schema_type": "relay_pc817",
+    "module_offer": "VALVE_RELAY_V01",
+    "desc": "Клапан подачи воды 12В через реле Songle и оптопару PC817."
+  },
+  {
+    "id": "pump_220v_contactor",
+    "category": "Насос",
+    "direction": "OUT",
+    "model_name": "PUMP (220V Силовой)",
+    "voltage": "220V",
+    "interface": "GPIO_OUT",
+    "schema_type": "relay_contactor",
+    "module_offer": "PUMP_PRO_V01",
+    "desc": "Насос 220В. Требует опторазвязку PC817, реле и магнитный контактор 25А."
+  },
+  {
+    "id": "ads1115_i2c",
+    "category": "АЦП Модуль",
+    "direction": "IN",
+    "model_name": "ADS1115 (pH/TDS)",
+    "voltage": "5V",
+    "interface": "I2C",
+    "schema_type": "i2c_bus",
+    "desc": "Подключается к SDA1/SCL1. Обязателен делитель напряжения 10k/10k для pH и TDS."
+  },
+  {
+    "id": "water_temp_1wire",
+    "category": "Датчик температуры",
+    "direction": "IN",
+    "model_name": "DS18B20 (1-Wire)",
+    "voltage": "3.3V",
+    "interface": "1-Wire",
+    "schema_type": "ds18b20",
+    "module_offer": "TEMP_SENS_V01",
+    "desc": "Цифровой датчик температуры воды. Требует подтяжку 4.7kΩ к 3.3V."
+  }
+]

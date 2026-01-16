@@ -1,13 +1,54 @@
-:root {
-    --primary-color: #2ecc71;
-    --dark-color: #2c3e50;
-    --bg-color: #f4f7f6;
+/* Адаптивный контейнер */
+.raspberry-box {
+    width: 100%;
+    max-width: 400px; /* Ограничиваем максимальную ширину */
+    aspect-ratio: 4 / 5; /* Сохраняем пропорции */
+    background: #003d00;
+    border: 4px solid #002200;
+    border-radius: 12px;
+    position: relative;
+    padding: 10px;
+    margin: 0 auto;
 }
 
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-.card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-.hidden { display: none; }
-input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-button { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-button:hover { opacity: 0.9; }
-.device-item { text-align: left; background: #eafaf1; padding: 10px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--primary-color); }
+/* Компактный шлейф */
+.gpio-connector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    background: #222;
+    padding: 8px;
+    border-radius: 4px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    bottom: 10px; /* Теперь шлейф тянется по высоте платы */
+    overflow-y: auto; /* Добавляем прокрутку, если экран совсем маленький */
+}
+
+/* Миниатюрные пины */
+.pin-slot {
+    width: 45px;
+    height: 32px; /* Уменьшили высоту */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px; /* Очень мелкий шрифт для номеров */
+    line-height: 1;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pin-slot b {
+    font-size: 8px; /* Чуть крупнее для названия GPIO */
+    display: block;
+    margin-top: 2px;
+}
+
+/* Скрываем лишний текст на маленьких экранах */
+@media (max-width: 600px) {
+    .pin-slot span { display: none; }
+    .pin-slot b { font-size: 7px; }
+}

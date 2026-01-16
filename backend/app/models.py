@@ -1,29 +1,37 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
-# Важно: импортируем Base из db.py, который лежит в папке выше
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, JSON
 from db import Base
 
+class ComponentLibrary(Base):
+    """Справочник доступного оборудования (наш склад)"""
+    __tablename__ = "component_library"
+
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String)     # Pump, Valve, Sensor, etc.
+    direction = Column(String)    # IN (вход) / OUT (выход)
+    model_name = Column(String)   # ESPA Aspri 15
+    voltage = Column(String)      # 220V, 12V
+    interface = Column(String)    # GPIO, Modbus, Analog
+    schema_svg = Column(String)   # Здесь будет название файла схемы
+
 class DeviceConfig(Base):
-    """Таблица устройств: сюда Мастер Настройки будет записывать новые насосы/клапаны"""
+    """Таблица настроенных устройств на ферме"""
     __tablename__ = "devices"
 
-    id = Column(String, primary_key=True, index=True) # например: pump_main
-    device_type = Column(String, default="pump")    # тип: насос, свет, клапан
-    label = Column(String)                           # Имя для сайта (напр. "Полив огурцов")
-    connection_type = Column(String, default="relay") # relay (реле) или modbus
-    pin_number = Column(Integer, nullable=True)      # номер GPIO на Raspberry
-    modbus_address = Column(Integer, nullable=True)  # адрес для инвертора
+    id = Column(String, primary_key=True, index=True)
+    label = Column(String)
+    device_type = Column(String)
+    connection_type = Column(String) # GPIO / Modbus
+    pin_number = Column(Integer)     # Номер пина
+    model_selected = Column(String)  # Какую модель из библиотеки выбрали
     status = Column(String, default="offline")
+    # Добавляем поле для хранения дополнительных настроек
+    extra_data = Column(JSON, nullable=True) 
 
 class DeviceCommand(Base):
-    """Таблица команд: сюда Талгат шлет сигналы 'Включить/Выключить'"""
     __tablename__ = "device_commands"
-
     id = Column(Integer, primary_key=True, index=True)
     device_id = Column(String)
     command = Column(String)
-    status = Column(String, default="pending") # pending (ждет), sent (отправлено)
+    status = Column(String, default="pending")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
