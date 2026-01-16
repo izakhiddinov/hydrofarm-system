@@ -1,0 +1,27 @@
+# Описание компонентов HydroFarm [cite: 32, 63, 132, 175]
+switch:
+  - platform: rpi_gpio # Для Raspberry Pi (на ПК будет просто симуляция)
+    ports:
+      17: "PUMP_1 (Main)"
+      27: "PUMP_2 (Reserve)"
+      26: "INLET_VALVE_1"
+      22: "LIGHT_1"
+      23: "FAN_1"
+      24: "FILL_VALVE_2"
+
+sensor:
+  - platform: pulse_counter
+    pin: 21
+    name: "FLOW_SENSOR_1"
+    unit_of_measurement: "L/min"
+
+# Настройка АЦП для pH и TDS 
+ads1115:
+  - address: 0x48
+    i2c_bus: i2c_1
+
+# Датчик температуры воды 
+sensor:
+  - platform: dallas
+    address: 0x... # Здесь будет ID вашего DS18B20
+    name: "WATER_TEMP_1"
